@@ -119,7 +119,8 @@ public:
              std::vector<double> &t_ncdm,
              std::vector<double> &t_tot,
              std::vector<double> &phi_or_h,
-             std::vector<double> &psi_or_eta);
+             std::vector<double> &psi_or_eta,
+             double& fHa);
 
   // for BAO
   inline double z_drag() const { return th.z_d; }

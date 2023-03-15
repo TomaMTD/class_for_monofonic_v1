@@ -462,7 +462,8 @@ void ClassEngine::getTk(double z,
                         std::vector<double> &t_ncdm,
                         std::vector<double> &t_tot,
                         std::vector<double> &phi_or_h,
-                        std::vector<double> &psi_or_eta)
+                        std::vector<double> &psi_or_eta,
+                        double &fHa)
 {
 
   if (!dofree)
@@ -481,7 +482,7 @@ void ClassEngine::getTk(double z,
 
   double *pvecback = new double[ba.bg_size];
   background_at_tau(&ba, tau, long_info, inter_normal, &index, pvecback);
-  double fHa = pvecback[ba.index_bg_f] * (pvecback[ba.index_bg_a] * pvecback[ba.index_bg_H]);
+  fHa = pvecback[ba.index_bg_f] * (pvecback[ba.index_bg_a] * pvecback[ba.index_bg_H]);
   delete[] pvecback;
 
   // copy transfer func data to temporary
