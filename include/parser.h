@@ -26,18 +26,13 @@ struct file_content {
 extern "C" {
 #endif
 
-int parser_read_file(
-		     const char * filename,
-		     struct file_content * pfc,
-		     ErrorMsg errmsg
-		     );
+  int parser_init(struct file_content * pfc,
+                  int size,
+                  char * filename,
+                  ErrorMsg errmsg);
 
-int parser_init(
-		struct file_content * pfc,
-		int size,
-    const char * filename,
-		ErrorMsg errmsg
-		);
+  int parser_free(struct file_content * pfc);
+
 
   int parser_read_file(char * filename,
                        struct file_content * pfc,
