@@ -289,7 +289,7 @@ class_precision_parameter(tight_coupling_trigger_tau_c_over_tau_k,double,0.01)
  * when to switch off tight-coupling approximation:
  * third condition: for the case of idm with photons.
  */
-class_precision_parameter(tight_coupling_trigger_tau_c_over_tau_dmu_idm_g, double, 0.01);
+class_precision_parameter(tight_coupling_trigger_tau_c_over_tau_dmu_idm_g, double, 0.01)
 
 /**
  * when to switch off tight-coupling approximation:
