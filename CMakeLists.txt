@@ -6,37 +6,16 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Options
 option(ENABLE_TESTS "compile test executables" OFF)
-option(ENABLE_HYREC "compile hyrec in ./hyrec directory" ON)
 
 # OpenMP
 find_package(OpenMP)
 
 # Sources
-set(TOOLS_SRC 
-    tools/growTable.c 
-    tools/dei_rkck.c 
-    tools/sparse.c 
-    tools/evolver_rkck.c  
-    tools/evolver_ndf15.c 
-    tools/arrays.c 
-    tools/parser.c 
-    tools/quadrature.c 
-    tools/hyperspherical.c 
-    tools/common.c 
-    tools/trigonometric_integrals.c
+file( GLOB TOOLS_SRC
+  ${PROJECT_SOURCE_DIR}/tools/*.c
 )
-
-set(SOURCE_SRC
-    source/input.c 
-    source/output.c
-    source/background.c 
-    source/thermodynamics.c 
-    source/perturbations.c 
-    source/primordial.c 
-    source/nonlinear.c 
-    source/transfer.c 
-    source/spectra.c 
-    source/lensing.c
+file( GLOB SOURCE_SRC
+  ${PROJECT_SOURCE_DIR}/source/*.c
 )
 
 set(CPP_SRC 
@@ -56,35 +35,29 @@ set(TESTS
     test_hyperspherical
 )
 
-
-
-if(ENABLE_HYREC)
-    set(EXTERNAL_SRC 
-        hyrec/hyrectools.c
-        hyrec/helium.c
-        hyrec/hydrogen.c 
-        hyrec/history.c
-    )
-else()
-    set(EXTERNAL_SRC )
-endif()
+file( GLOB EXTERNAL_SRC
+    ${PROJECT_SOURCE_DIR}/external/RecfastCLASS/*.c
+    ${PROJECT_SOURCE_DIR}/external/HyRec2020/*.c
+    ${PROJECT_SOURCE_DIR}/external/heating/*.c
+)
+set(EXTERNAL_INCLUDE external/HyRec2020/)
 
 ## Main library
-add_library(libclass ${TOOLS_SRC} ${SOURCE_SRC} ${EXTERNAL_SRC})
+add_library(libclass ${TOOLS_SRC} ${SOURCE_SRC} ${RECFAST_SRC} ${EXTERNAL_SRC})
 add_library(class::libclass ALIAS libclass)
 set_target_properties(libclass PROPERTIES OUTPUT_NAME class)
 set_target_properties(libclass PROPERTIES C_STANDARD 11)
 set_property(TARGET libclass PROPERTY POSITION_INDEPENDENT_CODE ON)
 # target_compile_options(libclass PRIVATE "-O4" "-ffast-math" "-g")
 target_compile_definitions(libclass PUBLIC "__CLASSDIR__=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
-target_include_directories(libclass PUBLIC include)
+target_include_directories(libclass PUBLIC include ${EXTERNAL_INCLUDE} ${CMAKE_CURRENT_LIST_DIR}/external/RecfastCLASS ${CMAKE_CURRENT_LIST_DIR}/external/heating)
 target_link_libraries(libclass PRIVATE m)
 if(OpenMP_FOUND)
     target_link_libraries(libclass PRIVATE OpenMP::OpenMP_C)
 endif()
 if(ENABLE_HYREC)
     target_compile_definitions(libclass PUBLIC "HYREC")
-    target_include_directories(libclass PUBLIC ${CMAKE_CURRENT_LIST_DIR}/hyrec)
+    target_include_directories(libclass PUBLIC ${CMAKE_CURRENT_LIST_DIR}/external/HyRec2020/)
 endif()
 
 ## Main Executable
