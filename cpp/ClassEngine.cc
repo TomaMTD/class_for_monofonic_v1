@@ -456,10 +456,12 @@ void ClassEngine::getTk(double z,
                         std::vector<double> &d_cdm,
                         std::vector<double> &d_b,
                         std::vector<double> &d_ncdm,
+                        std::vector<double> &d_m,
                         std::vector<double> &d_tot,
                         std::vector<double> &t_cdm,
                         std::vector<double> &t_b,
                         std::vector<double> &t_ncdm,
+                        std::vector<double> &t_m,
                         std::vector<double> &t_tot,
                         std::vector<double> &phi_or_h,
                         std::vector<double> &psi_or_eta,
@@ -491,10 +493,12 @@ void ClassEngine::getTk(double z,
   d_b.assign(pt.k_size[index_md], 0.0);
   d_ncdm.assign(pt.k_size[index_md], 0.0);
   d_tot.assign(pt.k_size[index_md], 0.0);
+  d_m.assign(pt.k_size[index_md], 0.0);
   t_cdm.assign(pt.k_size[index_md], 0.0);
   t_b.assign(pt.k_size[index_md], 0.0);
   t_ncdm.assign(pt.k_size[index_md], 0.0);
   t_tot.assign(pt.k_size[index_md], 0.0);
+  t_m.assign(pt.k_size[index_md], 0.0);
   phi_or_h.assign(pt.k_size[index_md], 0.0);
   psi_or_eta.assign(pt.k_size[index_md], 0.0);
 
@@ -506,9 +510,11 @@ void ClassEngine::getTk(double z,
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_cdm, tau, &d_cdm[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_b, tau, &d_b[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_ncdm1, tau, &d_ncdm[0]);
+  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_m, tau, &d_tot[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_tot, tau, &d_tot[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_b, tau, &t_b[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_ncdm1, tau, &t_ncdm[0]);
+  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_m, tau, &t_tot[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_tot, tau, &t_tot[0]);
 
   //
@@ -521,20 +527,10 @@ void ClassEngine::getTk(double z,
     call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_phi, tau, &phi_or_h[0]);
   }
   
-  // gauge trafo velocities, store k-vector
+  // store k-vector
   for (int index_k = 0; index_k < pt.k_size[index_md]; index_k++)
   {
-    // write data to vectors
     k.push_back( pt.k[index_md][index_k] );
-
-    // use the conformal Newtonian gauge for velocities
-    // not correct, but N-body gauge currently not implemented
-    // double alphak2 = (h_prime[index_k] + 6 * eta_prime[index_k]) / 2;
-
-    // t_cdm[index_k] = (-alphak2) / fHa;
-    // t_b[index_k] = (-alphak2 + t_b[index_k]) / fHa;
-    // t_ncdm[index_k] = (-alphak2 + t_ncdm[index_k]) / fHa;
-    // t_tot[index_k] = (-alphak2 + t_tot[index_k]) / fHa;
   }
 }
 
