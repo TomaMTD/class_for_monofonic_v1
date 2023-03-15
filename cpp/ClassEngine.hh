@@ -108,6 +108,7 @@ public:
       double *psource);
 
   void getTk(double z,
+             int gauge,
              std::vector<double> &k,
              std::vector<double> &d_cdm,
              std::vector<double> &d_b,
@@ -116,7 +117,9 @@ public:
              std::vector<double> &t_cdm,
              std::vector<double> &t_b,
              std::vector<double> &t_ncdm,
-             std::vector<double> &t_tot);
+             std::vector<double> &t_tot,
+             std::vector<double> &phi_or_h,
+             std::vector<double> &psi_or_eta);
 
   // for BAO
   inline double z_drag() const { return th.z_d; }
@@ -147,28 +150,17 @@ public:
 private:
   // structures class en commun
   struct file_content fc;
-  struct precision pr;
-  struct background ba;
-  struct thermodynamics th;
-  struct perturbations pt;
-  struct transfer tr;
-  struct primordial pm;
-  struct harmonic hr;
-  struct fourier fo;
-  struct lensing le;
-  struct distortions sd;
-  struct output op;
-  // struct precision pr;        /* for precision parameters */
-  // struct background ba;       /* for cosmological background */
-  // struct thermodynamics th;           /* for thermodynamics */
-  // struct perturbations pt;         /* for source functions */
-  // struct transfer tr;        /* for transfer functions */
-  // struct primordial pm;       /* for primordial spectra */
-  // struct harmonic sp;          /* for output spectra */
-  // // struct nonlinear nl;        /* for non-linear spectra */
-  // struct lensing le;          /* for lensed spectra */
-  // struct distortions sd;      /* for spectral distortions */
-  // struct output op;           /* for output files */
+  struct precision pr;      /* for precision parameters */
+  struct background ba;     /* for cosmological background */
+  struct thermodynamics th; /* for thermodynamics */
+  struct perturbations pt;  /* for source functions */
+  struct transfer tr;       /* for transfer functions */
+  struct primordial pm;     /* for primordial spectra */
+  struct harmonic hr;       /* for spectra */
+  struct fourier fo;        /* for non-linear spectra */
+  struct lensing le;        /* for lensed spectra */
+  struct distortions sd;    /* for spectral distortions */
+  struct output op;         /* for output spectra */
 
   ErrorMsg _errmsg; /* for error messages */
   double *cl;

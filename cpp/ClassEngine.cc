@@ -451,6 +451,7 @@ void ClassEngine::call_perturbations_sources_at_tau(
 }
 
 void ClassEngine::getTk(double z,
+                        int gauge,
                         std::vector<double> &k,
                         std::vector<double> &d_cdm,
                         std::vector<double> &d_b,
@@ -459,7 +460,9 @@ void ClassEngine::getTk(double z,
                         std::vector<double> &t_cdm,
                         std::vector<double> &t_b,
                         std::vector<double> &t_ncdm,
-                        std::vector<double> &t_tot)
+                        std::vector<double> &t_tot,
+                        std::vector<double> &phi_or_h,
+                        std::vector<double> &psi_or_eta)
 {
 
   if (!dofree)
@@ -491,6 +494,8 @@ void ClassEngine::getTk(double z,
   t_b.assign(pt.k_size[index_md], 0.0);
   t_ncdm.assign(pt.k_size[index_md], 0.0);
   t_tot.assign(pt.k_size[index_md], 0.0);
+  phi_or_h.assign(pt.k_size[index_md], 0.0);
+  psi_or_eta.assign(pt.k_size[index_md], 0.0);
 
   if (pt.ic_size[index_md] > 1)
   {
@@ -506,26 +511,29 @@ void ClassEngine::getTk(double z,
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_tot, tau, &t_tot[0]);
 
   //
-  std::vector<double> h_prime(pt.k_size[index_md], 0.0), eta_prime(pt.k_size[index_md], 0.0);
-  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_eta_prime, tau, &eta_prime[0]);
-  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_h_prime, tau, &h_prime[0]);
-
+  // std::vector<double> h_prime(pt.k_size[index_md], 0.0), eta_prime(pt.k_size[index_md], 0.0);
+  if( gauge == 0 ){
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_eta_prime, tau, &psi_or_eta[0]);
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_h_prime, tau, &phi_or_h[0]);
+  }else{
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_psi, tau, &psi_or_eta[0]);
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_phi, tau, &phi_or_h[0]);
+  }
+  
   // gauge trafo velocities, store k-vector
   for (int index_k = 0; index_k < pt.k_size[index_md]; index_k++)
   {
-    auto ak = pt.k[index_md][index_k];
-
     // write data to vectors
-    k.push_back(ak);
+    k.push_back( pt.k[index_md][index_k] );
 
     // use the conformal Newtonian gauge for velocities
     // not correct, but N-body gauge currently not implemented
-    double alphak2 = (h_prime[index_k] + 6 * eta_prime[index_k]) / 2;
+    // double alphak2 = (h_prime[index_k] + 6 * eta_prime[index_k]) / 2;
 
-    t_cdm[index_k] = (-alphak2) / fHa;
-    t_b[index_k] = (-alphak2 + t_b[index_k]) / fHa;
-    t_ncdm[index_k] = (-alphak2 + t_ncdm[index_k]) / fHa;
-    t_tot[index_k] = (-alphak2 + t_tot[index_k]) / fHa;
+    // t_cdm[index_k] = (-alphak2) / fHa;
+    // t_b[index_k] = (-alphak2 + t_b[index_k]) / fHa;
+    // t_ncdm[index_k] = (-alphak2 + t_ncdm[index_k]) / fHa;
+    // t_tot[index_k] = (-alphak2 + t_tot[index_k]) / fHa;
   }
 }
 
