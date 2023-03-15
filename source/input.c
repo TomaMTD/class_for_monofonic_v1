@@ -3093,7 +3093,7 @@ int input_read_parameters_species(struct file_content * pfc,
 
   /** 7.3) Final consistency checks for dark matter species */
 
-  class_test(abs(f_cdm + f_idm - 1.) > 1e-10,
+  class_test(fabs(f_cdm + f_idm - 1.) > 1e-10,
              errmsg,
              "The dark matter species do not add up to the expected value");
 
@@ -3106,7 +3106,7 @@ int input_read_parameters_species(struct file_content * pfc,
   class_test((f_idm > 0.) && (pba->Omega0_cdm == 0.),
              errmsg,
              "If you want a fraction of interacting, to be consistent, you should not set the fraction of CDM to zero");
-  class_test(abs(f_cdm + f_idm - 1.) > ppr->tol_fraction_accuracy,
+  class_test(fabs(f_cdm + f_idm - 1.) > ppr->tol_fraction_accuracy,
              errmsg,
              "The dark matter species do not add up to the expected value");
   if ( f_idm > 0. )
