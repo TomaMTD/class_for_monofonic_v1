@@ -510,11 +510,11 @@ void ClassEngine::getTk(double z,
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_cdm, tau, &d_cdm[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_b, tau, &d_b[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_ncdm1, tau, &d_ncdm[0]);
-  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_m, tau, &d_tot[0]);
+  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_m, tau, &d_m[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_tot, tau, &d_tot[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_b, tau, &t_b[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_ncdm1, tau, &t_ncdm[0]);
-  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_m, tau, &t_tot[0]);
+  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_m, tau, &t_m[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_tot, tau, &t_tot[0]);
 
   //
