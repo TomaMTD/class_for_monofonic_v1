@@ -463,8 +463,8 @@ void ClassEngine::getTk(double z,
                         std::vector<double> &t_ncdm,
                         std::vector<double> &t_m,
                         std::vector<double> &t_tot,
-                        std::vector<double> &phi_or_h,
-                        std::vector<double> &psi_or_eta,
+                        std::vector<double> &phi_or_h_prime,
+                        std::vector<double> &psi_or_eta_prime,
                         double &fHa)
 {
 
@@ -499,8 +499,8 @@ void ClassEngine::getTk(double z,
   t_ncdm.assign(pt.k_size[index_md], 0.0);
   t_tot.assign(pt.k_size[index_md], 0.0);
   t_m.assign(pt.k_size[index_md], 0.0);
-  phi_or_h.assign(pt.k_size[index_md], 0.0);
-  psi_or_eta.assign(pt.k_size[index_md], 0.0);
+  phi_or_h_prime.assign(pt.k_size[index_md], 0.0);
+  psi_or_eta_prime.assign(pt.k_size[index_md], 0.0);
 
   if (pt.ic_size[index_md] > 1)
   {
@@ -514,17 +514,20 @@ void ClassEngine::getTk(double z,
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_tot, tau, &d_tot[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_b, tau, &t_b[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_ncdm1, tau, &t_ncdm[0]);
-  call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_m, tau, &t_m[0]);
+  if(!pt.has_source_theta_m) // this may not be defined (e.g. in synchronous gauge?)
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_m, tau, &t_m[0]);
+  else
+    t_m.assign(pt.k_size[index_md], 0.0);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_tot, tau, &t_tot[0]);
 
   //
   // std::vector<double> h_prime(pt.k_size[index_md], 0.0), eta_prime(pt.k_size[index_md], 0.0);
-  if( gauge == 0 ){
-    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_eta_prime, tau, &psi_or_eta[0]);
-    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_h_prime, tau, &phi_or_h[0]);
-  }else{
-    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_psi, tau, &psi_or_eta[0]);
-    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_phi, tau, &phi_or_h[0]);
+  if( gauge == 0 && pt.has_source_eta && pt.has_source_h ){
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_eta_prime, tau, &psi_or_eta_prime[0]);
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_h_prime, tau, &phi_or_h_prime[0]);
+  }else if( pt.has_source_phi && pt.has_source_psi ){
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_psi, tau, &psi_or_eta_prime[0]);
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_phi, tau, &phi_or_h_prime[0]);
   }
   
   // store k-vector
