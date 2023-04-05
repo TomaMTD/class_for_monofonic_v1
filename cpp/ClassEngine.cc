@@ -455,12 +455,12 @@ void ClassEngine::getTk(double z,
                         std::vector<double> &k,
                         std::vector<double> &d_cdm,
                         std::vector<double> &d_b,
-                        std::vector< std::vector<double> > &d_ncdm,
+                        std::vector<std::vector<double>> &d_ncdm,
                         std::vector<double> &d_m,
                         std::vector<double> &d_tot,
                         std::vector<double> &t_cdm,
                         std::vector<double> &t_b,
-                        std::vector< std::vector<double> > &t_ncdm,
+                        std::vector<std::vector<double>> &t_ncdm,
                         std::vector<double> &t_m,
                         std::vector<double> &t_tot,
                         std::vector<double> &phi_or_h_prime,
@@ -491,12 +491,12 @@ void ClassEngine::getTk(double z,
   const size_t index_md = pt.index_md_scalars;
   d_cdm.assign(pt.k_size[index_md], 0.0);
   d_b.assign(pt.k_size[index_md], 0.0);
-  d_ncdm.assign( ba.N_ncdm, std::vector<double>(pt.k_size[index_md], 0.0) );
+  d_ncdm.assign(ba.N_ncdm, std::vector<double>(pt.k_size[index_md], 0.0));
   d_tot.assign(pt.k_size[index_md], 0.0);
   d_m.assign(pt.k_size[index_md], 0.0);
   t_cdm.assign(pt.k_size[index_md], 0.0);
   t_b.assign(pt.k_size[index_md], 0.0);
-  t_ncdm.assign( ba.N_ncdm, std::vector<double>(pt.k_size[index_md], 0.0) );
+  t_ncdm.assign(ba.N_ncdm, std::vector<double>(pt.k_size[index_md], 0.0));
   t_tot.assign(pt.k_size[index_md], 0.0);
   t_m.assign(pt.k_size[index_md], 0.0);
   phi_or_h_prime.assign(pt.k_size[index_md], 0.0);
@@ -508,17 +508,18 @@ void ClassEngine::getTk(double z,
   }
 
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_cdm, tau, &d_cdm[0]);
-  
+
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_b, tau, &d_b[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_b, tau, &t_b[0]);
 
-  for( int incdm=0; incdm<ba.N_ncdm; ++incdm ){
-    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_ncdm1+incdm, tau, &d_ncdm[incdm][0]);
-    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_ncdm1+incdm, tau, &t_ncdm[incdm][0]);
+  for (int incdm = 0; incdm < ba.N_ncdm; ++incdm)
+  {
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_ncdm1 + incdm, tau, &d_ncdm[incdm][0]);
+    call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_ncdm1 + incdm, tau, &t_ncdm[incdm][0]);
   }
-  
+
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_m, tau, &d_m[0]);
-  if(!pt.has_source_theta_m) // this may not be defined (e.g. in synchronous gauge?)
+  if (pt.has_source_theta_m) // this may not be defined (e.g. in synchronous gauge?)
     call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_m, tau, &t_m[0]);
   else
     t_m.assign(pt.k_size[index_md], 0.0);
@@ -526,20 +527,21 @@ void ClassEngine::getTk(double z,
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_delta_tot, tau, &d_tot[0]);
   call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_theta_tot, tau, &t_tot[0]);
 
-  //
-  // std::vector<double> h_prime(pt.k_size[index_md], 0.0), eta_prime(pt.k_size[index_md], 0.0);
-  if( gauge == 0 && pt.has_source_eta && pt.has_source_h ){
+  if (gauge == 0 && pt.has_source_eta && pt.has_source_h)
+  {
     call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_eta_prime, tau, &psi_or_eta_prime[0]);
     call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_h_prime, tau, &phi_or_h_prime[0]);
-  }else if( pt.has_source_phi && pt.has_source_psi ){
+  }
+  else if (pt.has_source_phi && pt.has_source_psi)
+  {
     call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_psi, tau, &psi_or_eta_prime[0]);
     call_perturbations_sources_at_tau(index_md, 0, pt.index_tp_phi, tau, &phi_or_h_prime[0]);
   }
-  
+
   // store k-vector
   for (int index_k = 0; index_k < pt.k_size[index_md]; index_k++)
   {
-    k.push_back( pt.k[index_md][index_k] );
+    k.push_back(pt.k[index_md][index_k]);
   }
 }
 
@@ -790,7 +792,6 @@ double ClassEngine::get_Da(double z)
   // call to fill pvecback
   background_at_tau(&ba, tau, long_info, inter_normal, &index, pvecback);
 
-  
   double D_ang = pvecback[ba.index_bg_ang_distance];
 #ifdef DBUG
   double H_z = pvecback[ba.index_bg_H];
