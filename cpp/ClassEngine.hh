@@ -104,7 +104,7 @@ public:
                            double * psource
                            );
 
-  void getTk( double z, 
+  void getTk( double z,
         std::vector<double>& k,
         std::vector<double>& d_cdm,
         std::vector<double>& d_b,
@@ -113,7 +113,10 @@ public:
         std::vector<double>& t_cdm,
         std::vector<double>& t_b,
         std::vector<double>& t_ncdm,
-        std::vector<double>& t_tot );
+        std::vector<double>& t_tot ,
+        std::vector<double>& phi ,
+        std::vector<double>& psi 
+        );
 
  //for BAO
   inline double z_drag() const {return th.z_d;}

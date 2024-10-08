@@ -388,8 +388,8 @@ void ClassEngine::call_perturb_sources_at_tau(
   }
 }
 
-void 
-ClassEngine::getTk( double z, 
+void
+ClassEngine::getTk( double z,
    std::vector<double>& k,
    std::vector<double>& d_cdm,
    std::vector<double>& d_b,
@@ -398,9 +398,12 @@ ClassEngine::getTk( double z,
    std::vector<double>& t_cdm,
    std::vector<double>& t_b,
    std::vector<double>& t_ncdm,
-   std::vector<double>& t_tot )
+   std::vector<double>& t_tot,
+   std::vector<double>& phi,
+   std::vector<double>& psi)
 {
-  
+
+
   if (!dofree) throw out_of_range("no Tk available because CLASS failed");
 
   double tau;
@@ -417,7 +420,7 @@ ClassEngine::getTk( double z,
   background_at_tau(&ba,tau,ba.long_info,ba.inter_normal, &index, pvecback);
   double fHa = pvecback[ba.index_bg_f] * (pvecback[ba.index_bg_a]*pvecback[ba.index_bg_H]);
   delete[] pvecback;
-  
+
   // copy transfer func data to temporary
   const size_t index_md = pt.index_md_scalars;
   d_cdm.assign( pt.k_size[index_md], 0.0 );
@@ -428,6 +431,8 @@ ClassEngine::getTk( double z,
   t_b.assign( pt.k_size[index_md], 0.0 );
   t_ncdm.assign( pt.k_size[index_md], 0.0 );
   t_tot.assign( pt.k_size[index_md], 0.0 );
+  phi.assign( pt.k_size[index_md], 0.0 );
+  psi.assign( pt.k_size[index_md], 0.0 );
 
   if( pt.ic_size[index_md] > 1 ){
     cerr << ">>>have more than 1 ICs, will use first and ignore others" << endl;
@@ -435,35 +440,41 @@ ClassEngine::getTk( double z,
 
   call_perturb_sources_at_tau(index_md, 0, pt.index_tp_delta_cdm, tau, &d_cdm[0]);
   call_perturb_sources_at_tau(index_md, 0, pt.index_tp_delta_b, tau, &d_b[0]);
-  call_perturb_sources_at_tau(index_md, 0, pt.index_tp_delta_ncdm1, tau, &d_ncdm[0]);
+  //call_perturb_sources_at_tau(index_md, 0, pt.index_tp_delta_ncdm1, tau, &d_ncdm[0]);
   call_perturb_sources_at_tau(index_md, 0, pt.index_tp_delta_tot, tau, &d_tot[0]);
+  call_perturb_sources_at_tau(index_md, 0, pt.index_tp_theta_cdm, tau, &t_cdm[0]);
   call_perturb_sources_at_tau(index_md, 0, pt.index_tp_theta_b, tau, &t_b[0]);
-  call_perturb_sources_at_tau(index_md, 0, pt.index_tp_theta_ncdm1, tau, &t_ncdm[0]);
+  //call_perturb_sources_at_tau(index_md, 0, pt.index_tp_theta_ncdm1, tau, &t_ncdm[0]);
   call_perturb_sources_at_tau(index_md, 0, pt.index_tp_theta_tot, tau, &t_tot[0]);
+  call_perturb_sources_at_tau(index_md, 0, pt.index_tp_phi, tau, &phi[0]);
+  call_perturb_sources_at_tau(index_md, 0, pt.index_tp_psi, tau, &psi[0]);
 
-  //
-  std::vector<double> h_prime(pt.k_size[index_md],0.0), eta_prime(pt.k_size[index_md],0.0);
-  call_perturb_sources_at_tau(index_md, 0, pt.index_tp_eta_prime, tau, &eta_prime[0]);
-  call_perturb_sources_at_tau(index_md, 0, pt.index_tp_h_prime, tau, &h_prime[0]);
+
+  // TOMA
+  //std::vector<double> h_prime(pt.k_size[index_md],0.0), eta_prime(pt.k_size[index_md],0.0);
+  //call_perturb_sources_at_tau(index_md, 0, pt.index_tp_eta_prime, tau, &eta_prime[0]);
+  //call_perturb_sources_at_tau(index_md, 0, pt.index_tp_h_prime, tau, &h_prime[0]);
 
   // gauge trafo velocities, store k-vector
-  for (int index_k=0; index_k<pt.k_size[index_md]; index_k++) 
+  for (int index_k=0; index_k<pt.k_size[index_md]; index_k++)
   {
     auto ak = pt.k[index_md][index_k];
 
     // write data to vectors
     k.push_back( ak );
 
-    // use the conformal Newtonian gauge for velocities
-    // not correct, but N-body gauge currently not implemented
-    double alphak2 = (h_prime[index_k]+6*eta_prime[index_k])/2; 
+    // TOMA
+    //// use the conformal Newtonian gauge for velocities
+    //// not correct, but N-body gauge currently not implemented
+    //double alphak2 = (h_prime[index_k]+6*eta_prime[index_k])/2; 
 
-    t_cdm[index_k]  = (-alphak2) / fHa;
-    t_b[index_k]    = (-alphak2 + t_b[index_k]) / fHa;
-    t_ncdm[index_k] = (-alphak2 + t_ncdm[index_k]) / fHa;
-    t_tot[index_k]  = (-alphak2 + t_tot[index_k]) / fHa;
+    //t_cdm[index_k]  = (-alphak2) / fHa;
+    //t_b[index_k]    = (-alphak2 + t_b[index_k]) / fHa;
+    //t_ncdm[index_k] = (-alphak2 + t_ncdm[index_k]) / fHa;
+    //t_tot[index_k]  = (-alphak2 + t_tot[index_k]) / fHa;
   }
 }
+
 
 double
 ClassEngine::getCl(Engine::cltype t,const long &l){
